@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Add Recipe</title>
+    @vite('resources/js/recipe-form.ts')
 </head>
 <body>
     <h1>Add a Recipe</h1>
@@ -48,19 +49,3 @@
 </body>
 </html>
 
-
-<script>
-    document.getElementById('add-ingredient').addEventListener('click', function () {
-        const container = document.getElementById('ingredient-rows');
-        const rows = container.querySelectorAll('.ingredient-row');
-        const nextIndex = rows.length;
-
-        const newRow = rows[rows.length - 1].cloneNode(true);
-        newRow.querySelectorAll('input').forEach(function (input) {
-            input.value = '';
-            input.name = input.name.replace(/ingredients\[\d+\]/, 'ingredients[' + nextIndex + ']');
-        });
-
-        container.appendChild(newRow);
-    });
-</script>
