@@ -19,6 +19,17 @@ A Laravel app for saving recipes with their ingredients. Each recipe can have ma
 - TypeScript and Vite for the frontend
 - PHPUnit feature tests
 
+## Prerequisites
+
+Install these before you start:
+
+- **PHP 8.2 or newer** with the `pdo_sqlite` and `sqlite3` extensions. Laravel Herd on Windows and macOS includes both.
+- **Composer 2**, the PHP package manager: https://getcomposer.org
+- **Node.js 20 or newer** (includes npm): https://nodejs.org
+- **Git**: https://git-scm.com
+
+You don't need to install Laravel separately. The project includes it, and `composer install` downloads the framework into the `vendor/` folder.
+
 ## Setup
 
 1. Install PHP dependencies:
@@ -49,6 +60,8 @@ A Laravel app for saving recipes with their ingredients. Each recipe can have ma
    ```
 
    On Windows PowerShell, use `New-Item database\database.sqlite` instead.
+
+   The `key:generate` step in step 3 writes a secret `APP_KEY` into `.env`. Laravel uses it to encrypt sessions and cookies. Without it, the app shows "No application encryption key has been specified."
 
 5. Run the migrations:
 
