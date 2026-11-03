@@ -1,35 +1,36 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>{{ $recipe->title }}</title>
-</head>
-<body>
+@extends('layouts.recipes.app')
+
+@section('title', $recipe->title)
+
+@section('content')
     <p><a href="{{ route('recipes.index') }}">&larr; All recipes</a></p>
-    
 
-    <h1>{{ $recipe->title }}</h1>
+    <div class="card">
+        <h1 style="margin-top:0;">{{ $recipe->title }}</h1>
 
-    @if ($recipe->description)
-        <p>{{ $recipe->description }}</p>
-    @endif
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <a class="btn" href="{{ route('recipes.edit', $recipe) }}">Edit</a>
+            <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn-danger">Delete</button>
+            </form>
+        </div>
 
-    <p>Prep: {{ $recipe->prep_minutes }} minutes &middot; Serves {{ $recipe->servings }}</p>
+        @if ($recipe->description)
+            <p>{{ $recipe->description }}</p>
+        @endif
 
-    <h2>Ingredients</h2>
-    <ul>
-        @foreach ($recipe->ingredients as $ingredient)
-            <li>{{ $ingredient->pivot->quantity }} {{ $ingredient->pivot->unit }} {{ $ingredient->name }}</li>
-        @endforeach
-    </ul>
+        <p style="color:#666;">Prep: {{ $recipe->prep_minutes }} minutes · Serves {{ $recipe->servings }}</p>
 
-    <h2>Steps</h2>
-    <div style="white-space: pre-line">{{ $recipe->steps }}</div>
+        <h2>Ingredients</h2>
+        <ul>
+            @foreach ($recipe->ingredients as $ingredient)
+                <li>{{ $ingredient->pivot->quantity }} {{ $ingredient->pivot->unit }} {{ $ingredient->name }}</li>
+            @endforeach
+        </ul>
 
-     <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" style="display:inline">
-        @csrf
-        @method('DELETE')
-        <button type="submit">Delete this recipe</button>
-    </form>
-</body>
-</html>
+        <h2>Steps</h2>
+        <div style="white-space: pre-line;">{{ $recipe->steps }}</div>
+    </div>
+@endsection

@@ -23,7 +23,7 @@ A Laravel app for saving recipes with their ingredients. Each recipe can have ma
 
 Install these before you start:
 
-- **PHP 8.2 or newer** with the `pdo_sqlite` and `sqlite3` extensions. Laravel Herd on Windows and macOS includes both.
+- **PHP 8.3 or newer** with the `pdo_sqlite` and `sqlite3` extensions. Laravel Herd on Windows and macOS includes both.
 - **Composer 2**, the PHP package manager: https://getcomposer.org
 - **Node.js 20 or newer** (includes npm): https://nodejs.org
 - **Git**: https://git-scm.com

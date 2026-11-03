@@ -1,32 +1,33 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Recipes</title>
-</head>
-<body>
+@extends('layouts.recipes.app')
+
+@section('title', 'Recipes')
+
+@section('content')
+
     <h1>Recipes</h1>
 
-    <p><a href="{{ route('recipes.create') }}">Add a recipe</a></p>
-
-    <form method="GET" action="{{ route('recipes.index') }}">
-        <input type="text" name="q" value="{{ $search }}" placeholder="Search recipes">
+    <form method="GET" action="{{ route('recipes.index') }}" style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+        <input type="text" name="q" value="{{ $search }}" placeholder="Search by title or ingredient">
         <button type="submit">Search</button>
         @if ($search !== '')
-            <a href="{{ route('recipes.index') }}">Clear</a>
+            <a class="btn" href="{{ route('recipes.index') }}" style="background:#777;">Clear</a>
         @endif
     </form>
 
-
-    <ul>
-        @forelse ($recipes as $recipe)
-            <li>
+    @forelse ($recipes as $recipe)
+        <div class="card" style="margin-bottom:1rem;">
+            <h2 style="margin:0 0 0.25rem;">
                 <a href="{{ route('recipes.show', $recipe) }}">{{ $recipe->title }}</a>
-                ({{ $recipe->prep_minutes }} min, serves {{ $recipe->servings }})
-            </li>
-        @empty
-            <li>No recipes yet.</li>
-        @endforelse
-    </ul>
-</body>
-</html>
+            </h2>
+            <p style="margin:0; color:#666;">{{ $recipe->prep_minutes }} min · serves {{ $recipe->servings }}</p>
+        </div>
+    @empty
+        <div class="card">
+            @if ($search !== '')
+                No recipes match "{{ $search }}".
+            @else
+                No recipes yet. <a href="{{ route('recipes.create') }}">Add your first one.</a>
+            @endif
+        </div>
+    @endforelse
+@endsection

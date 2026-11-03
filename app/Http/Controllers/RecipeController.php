@@ -106,7 +106,7 @@ class RecipeController extends Controller
         }
         $recipe->ingredients()->sync($links);
 
-        return redirect()->route('recipes.show', $recipe);
+        return redirect()->route('recipes.show', $recipe)->with('success', 'Recipe updated!');
     }
 
     public function destroy(Recipe $recipe): RedirectResponse
