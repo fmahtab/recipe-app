@@ -29,7 +29,6 @@ class RecipeController extends Controller
                         $query->where('name', 'like', '%'.$search.'%');
                     });
             })
-            //->when($search !== '', fn ($query) => $query->where('title', 'like', '%'.$search.'%'))
             ->latest()
             ->get();
 
@@ -68,5 +67,51 @@ class RecipeController extends Controller
         }
 
         return redirect()->route('recipes.create')->with('success', 'Recipe saved!');
+    }
+
+    public function edit(Recipe $recipe): View
+    {
+        $recipe->load('ingredients');
+
+        $rows = $recipe->ingredients->map(fn ($ingredient) => [
+            'name' => $ingredient->name,
+            'quantity' => $ingredient->pivot->quantity,
+            'unit' => $ingredient->pivot->unit,
+        ])->values()->all();
+
+        return view('recipes.edit', compact('recipe', 'rows'));
+    }
+
+    public function update(StoreRecipeRequest $request, Recipe $recipe): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $recipe->update([
+            'title' => $data['title'],
+            'description' => $data['description'] ?? null,
+            'prep_minutes' => $data['prep_minutes'],
+            'servings' => $data['servings'],
+            'steps' => $data['steps'],
+        ]);
+
+        foreach ($data['ingredients'] as $item) {
+            $ingredient = Ingredient::firstOrCreate([
+                'name' => strtolower(trim($item['name'])),
+            ]);
+
+            $links[$ingredient->id] = [
+                'quantity' => $item['quantity'],
+                'unit' => $item['unit'],
+            ];
+        }
+        $recipe->ingredients()->sync($links);
+
+        return redirect()->route('recipes.show', $recipe);
+    }
+
+    public function destroy(Recipe $recipe): RedirectResponse
+    {
+        $recipe->delete();
+        return redirect()->route('recipes.index')->with('success', 'Recipe deleted!');
     }
 }

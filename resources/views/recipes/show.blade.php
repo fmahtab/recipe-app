@@ -6,6 +6,7 @@
 </head>
 <body>
     <p><a href="{{ route('recipes.index') }}">&larr; All recipes</a></p>
+    
 
     <h1>{{ $recipe->title }}</h1>
 
@@ -24,5 +25,11 @@
 
     <h2>Steps</h2>
     <div style="white-space: pre-line">{{ $recipe->steps }}</div>
+
+     <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" style="display:inline">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Delete this recipe</button>
+    </form>
 </body>
 </html>
