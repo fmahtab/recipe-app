@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreRecipeRequest;
 use App\Models\Ingredient;
 use App\Models\Recipe;
@@ -47,26 +48,30 @@ class RecipeController extends Controller
     {
         $data = $request->validated();
 
-        $recipe = Recipe::create([
-            'title' => $data['title'],
-            'description' => $data['description'] ?? null,
-            'prep_minutes' => $data['prep_minutes'],
-            'servings' => $data['servings'],
-            'steps' => $data['steps'],
-        ]);
-
-        foreach ($data['ingredients'] as $item) {
-            $ingredient = Ingredient::firstOrCreate([
-                'name' => strtolower(trim($item['name'])),
+        $recipe = DB::transaction(function () use ($data) {
+            $new_recipe = Recipe::create([
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'prep_minutes' => $data['prep_minutes'],
+                'servings' => $data['servings'],
+                'steps' => $data['steps'],
             ]);
 
-            $recipe->ingredients()->attach($ingredient->id, [
-                'quantity' => $item['quantity'],
-                'unit' => $item['unit'],
-            ]);
-        }
+            foreach ($data['ingredients'] as $item) {
+                $ingredient = Ingredient::firstOrCreate([
+                    'name' => strtolower(trim($item['name'])),
+                ]);
 
-        return redirect()->route('recipes.create')->with('success', 'Recipe saved!');
+                $new_recipe->ingredients()->attach($ingredient->id, [
+                    'quantity' => $item['quantity'],
+                    'unit' => $item['unit'],
+                ]);
+                
+            }
+            return $new_recipe;
+        });
+        return redirect()->route('recipes.show', $recipe)->with('success', 'Recipe updated!');
+
     }
 
     public function edit(Recipe $recipe): View
@@ -86,15 +91,16 @@ class RecipeController extends Controller
     {
         $data = $request->validated();
 
-        $recipe->update([
-            'title' => $data['title'],
-            'description' => $data['description'] ?? null,
-            'prep_minutes' => $data['prep_minutes'],
-            'servings' => $data['servings'],
-            'steps' => $data['steps'],
-        ]);
+        DB::transaction(function () use ($data, $recipe) {
+            $recipe->update([
+                'title' => $data['title'],
+                'description' => $data['description'] ?? null,
+                'prep_minutes' => $data['prep_minutes'],
+                'servings' => $data['servings'],
+                'steps' => $data['steps'],
+            ]);
 
-        foreach ($data['ingredients'] as $item) {
+            foreach ($data['ingredients'] as $item) {
             $ingredient = Ingredient::firstOrCreate([
                 'name' => strtolower(trim($item['name'])),
             ]);
@@ -105,6 +111,8 @@ class RecipeController extends Controller
             ];
         }
         $recipe->ingredients()->sync($links);
+
+        });
 
         return redirect()->route('recipes.show', $recipe)->with('success', 'Recipe updated!');
     }
