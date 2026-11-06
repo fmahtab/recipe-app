@@ -3,9 +3,9 @@ const container = document.getElementById('ingredient-rows') as HTMLDivElement |
 
 if (button && container) {
     button.addEventListener('click', () => {
-        const rows = container.querySelectorAll<HTMLParagraphElement>('.ingredient-row');
+        const rows = container.querySelectorAll<HTMLDivElement>('.ingredient-row');
         const nextIndex = rows.length;
-        const newRow = rows[rows.length - 1].cloneNode(true) as HTMLParagraphElement;
+        const newRow = rows[rows.length - 1].cloneNode(true) as HTMLDivElement;
 
         newRow.querySelectorAll<HTMLInputElement>('input').forEach((input) => {
             input.value = '';
