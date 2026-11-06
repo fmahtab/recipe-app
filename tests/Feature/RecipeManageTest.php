@@ -61,4 +61,36 @@ class RecipeManageTest extends TestCase
         $this->assertDatabaseMissing('recipes', ['id' => $recipe->id]);
         $this->assertDatabaseMissing('ingredient_recipe', ['recipe_id' => $recipe->id]);
     }
+
+    public function test_ingredient_names_are_normalized_and_shared(): void
+    {
+        $response = $this->post('/recipes', [
+            'title' => 'Pancakes',
+            'prep_minutes' => 15,
+            'servings' => 4,
+            'steps' => 'Mix and cook.',
+            'ingredients' => [
+                ['name' => ' Flour ', 'quantity' => 2, 'unit' => 'cups'],
+            ],
+        ])->assertSessionHasNoErrors();
+
+        dump($response->status(), $response->headers->get('Location'));
+
+        $this->post('/recipes', [
+            'title' => 'Waffles',
+            'prep_minutes' => 20,
+            'servings' => 2,
+            'steps' => 'Mix and bake.',
+            'ingredients' => [
+                ['name' => 'flour', 'quantity' => 1, 'unit' => 'cup'],
+            ],
+        ])->assertSessionHasNoErrors();
+
+        $this->assertSame(1, Ingredient::where('name', 'flour')->count());
+
+        $this->assertSame(
+            2,
+            Recipe::whereHas('ingredients', fn ($query) => $query->where('name', 'flour'))->count()
+        );
+    }
 }

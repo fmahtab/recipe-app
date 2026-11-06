@@ -49,7 +49,7 @@ class RecipeController extends Controller
         $data = $request->validated();
 
         $recipe = DB::transaction(function () use ($data) {
-            $new_recipe = Recipe::create([
+            $newRecipe = Recipe::create([
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'prep_minutes' => $data['prep_minutes'],
@@ -58,7 +58,7 @@ class RecipeController extends Controller
             ]);
 
             $this->syncIngredients($newRecipe, $data['ingredients']);
-            return $new_recipe;
+            return $newRecipe;
         });
         return redirect()->route('recipes.show', $recipe)->with('success', 'Recipe updated!');
 
