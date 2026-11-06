@@ -57,17 +57,7 @@ class RecipeController extends Controller
                 'steps' => $data['steps'],
             ]);
 
-            foreach ($data['ingredients'] as $item) {
-                $ingredient = Ingredient::firstOrCreate([
-                    'name' => strtolower(trim($item['name'])),
-                ]);
-
-                $new_recipe->ingredients()->attach($ingredient->id, [
-                    'quantity' => $item['quantity'],
-                    'unit' => $item['unit'],
-                ]);
-                
-            }
+            $this->syncIngredients($newRecipe, $data['ingredients']);
             return $new_recipe;
         });
         return redirect()->route('recipes.show', $recipe)->with('success', 'Recipe updated!');
@@ -100,17 +90,7 @@ class RecipeController extends Controller
                 'steps' => $data['steps'],
             ]);
 
-            foreach ($data['ingredients'] as $item) {
-            $ingredient = Ingredient::firstOrCreate([
-                'name' => strtolower(trim($item['name'])),
-            ]);
-
-            $links[$ingredient->id] = [
-                'quantity' => $item['quantity'],
-                'unit' => $item['unit'],
-            ];
-        }
-        $recipe->ingredients()->sync($links);
+        $this->syncIngredients($recipe, $data['ingredients']);
 
         });
 
@@ -121,5 +101,23 @@ class RecipeController extends Controller
     {
         $recipe->delete();
         return redirect()->route('recipes.index')->with('success', 'Recipe deleted!');
+    }
+
+    private function syncIngredients(Recipe $recipe, array $items): void
+    {
+        $links = [];
+
+        foreach ($items as $item) {
+            $ingredient = Ingredient::firstOrCreate([
+                'name' => strtolower(trim($item['name'])),
+            ]);
+
+            $links[$ingredient->id] = [
+                'quantity' => $item['quantity'],
+                'unit' => $item['unit'],
+            ];
+        }
+
+        $recipe->ingredients()->sync($links);
     }
 }
