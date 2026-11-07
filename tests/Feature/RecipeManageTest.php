@@ -74,7 +74,6 @@ class RecipeManageTest extends TestCase
             ],
         ])->assertSessionHasNoErrors();
 
-        dump($response->status(), $response->headers->get('Location'));
 
         $this->post('/recipes', [
             'title' => 'Waffles',

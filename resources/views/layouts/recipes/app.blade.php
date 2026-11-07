@@ -16,7 +16,10 @@
         .btn-danger { background: #b03a2e; }
         .alert { background: #e8f5ee; border: 1px solid #b7dfc8; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
         .errors { color: #b03a2e; }
-    </style>
+        nav svg { width: 1rem; height: 1rem; vertical-align: middle; }
+        nav a,
+        nav span[aria-disabled="true"] > span { display: inline-block; padding: 0.25rem 0.6rem; margin: 0 0.1rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; color: #2f6f4e; background: #fff; }
+        nav span[aria-current="page"] > span { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 6px; background: #2f6f4e; color: #fff; }    </style>
 </head>
 <body>
     <header>

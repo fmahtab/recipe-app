@@ -31,7 +31,8 @@ class RecipeController extends Controller
                     });
             })
             ->latest()
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return view('recipes.index', compact('recipes', 'search'));
     }

@@ -30,4 +30,7 @@
             @endif
         </div>
     @endforelse
+    <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+        {{ $recipes->links() }}
+    </div>
 @endsection

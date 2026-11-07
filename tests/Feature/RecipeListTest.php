@@ -66,4 +66,31 @@ class RecipeListTest extends TestCase
             ->assertSee('Garden Bowl');
     }
 
+    public function test_list_shows_pagination_correctly(): void
+    {
+        for ($i = 1; $i <=12; $i++){
+            $recipe = Recipe::create([
+                'title' => 'TestRecipe_'.$i,
+                'prep_minutes' => 10+$i,
+                'servings' => 2+$i,
+                'steps' => 'Mix and cook.',
+                'ingredients' => [
+                    ['name' => ' Flour ', 'quantity' => $i, 'unit' => 'cups'],
+                ],
+            ]);
+            
+        }
+        $this->get('/recipes')
+            ->assertOk()
+            ->assertViewHas('recipes', function ($recipes) {
+                return $recipes->count() === 10;
+            });
+
+        $this->get('/recipes?page=2')
+            ->assertOk()
+            ->assertViewHas('recipes', function ($recipes) {
+                return $recipes->count() === 2;
+            });
+    }
+
 }
