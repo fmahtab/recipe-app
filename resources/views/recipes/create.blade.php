@@ -38,6 +38,13 @@
                 @endforeach
             </div>
             <button type="button" id="add-ingredient" style="background:#777;">+ Add ingredient</button>
+            <template id="ingredient-template">
+                <div class="ingredient-row" style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                    <input type="text" placeholder="Name" data-field="name">
+                    <input type="number" step="any" placeholder="Quantity" data-field="quantity">
+                    <input type="text" placeholder="Unit" data-field="unit">
+                </div>
+            </template>
 
             <p style="margin-top:1.5rem;"><button type="submit">Save recipe</button></p>
         </form>
