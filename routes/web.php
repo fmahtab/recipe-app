@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\RegisteredUserController;
+use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,6 +20,8 @@ Route::put('/recipes/{recipe}', [RecipeController::class, 'update'])->name('reci
 Route::delete('/recipes/{recipe}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register.create');
-
 Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
+
+Route::get('/login', [LoginController::class, 'create'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 
