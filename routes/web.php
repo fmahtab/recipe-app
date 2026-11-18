@@ -25,3 +25,4 @@ Route::post('/register', [RegisteredUserController::class, 'store'])->name('regi
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.store');
 
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');

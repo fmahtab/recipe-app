@@ -5,6 +5,12 @@
 @section('content')
 
     <h1>Recipes</h1>
+    @auth
+        <form method="POST" action="{{route('logout')}}">
+            @csrf
+            <button type="submit">Logout</button>
+        </form>
+    @endauth
 
     <form method="GET" action="{{ route('recipes.index') }}" style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
         <input type="text" name="q" value="{{ $search }}" placeholder="Search by title or ingredient">
