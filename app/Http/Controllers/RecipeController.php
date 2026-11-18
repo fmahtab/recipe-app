@@ -48,14 +48,16 @@ class RecipeController extends Controller
     public function store(StoreRecipeRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $user_id = $request->user()->id;
 
-        $recipe = DB::transaction(function () use ($data) {
+        $recipe = DB::transaction(function () use ($data, $user_id) {
             $newRecipe = Recipe::create([
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'prep_minutes' => $data['prep_minutes'],
                 'servings' => $data['servings'],
                 'steps' => $data['steps'],
+                'user_id' => $user_id,
             ]);
 
             $this->syncIngredients($newRecipe, $data['ingredients']);
