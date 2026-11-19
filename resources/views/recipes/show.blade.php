@@ -14,7 +14,7 @@
             @endcan
             
             @can('delete', $recipe)
-                <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" style="display:inline;">
+                <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" onsubmit="return confirm('Delete this recipe permanently?')" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn-danger">Delete</button>
