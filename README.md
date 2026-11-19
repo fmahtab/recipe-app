@@ -6,24 +6,31 @@ A Laravel app for saving recipes with their ingredients. Each recipe can have ma
 
 - Add a recipe with a title, prep time, servings, steps, and any number of ingredients
 - Validation with a Form Request, which skips blank ingredient rows
-- List all recipes, newest first
 - Search recipes by title or by ingredient name
+- Browse recipes newest first, with 10 recipes per page and search preserved across pages
 - Recipe detail page showing ingredients with quantities
 - Add-ingredient button, written in TypeScript and built with Vite
+- Registration with validation and hashed passwords
+- Sign-in and sign-out
+- Public recipe browsing
+- Recipe creation for signed-in users, with ownership assigned automatically
+- Editing and deletion restricted to the owner
+- Confirmation before deletion
 
 ## Tech Stack
 
 - PHP 8.3+ and Laravel
-- SQLite database
 - Blade templates
 - TypeScript and Vite for the frontend
 - PHPUnit feature tests
+- MySQL 8, running in Docker
 
 ## Prerequisites
 
 Install these before you start:
 
-- **PHP 8.3 or newer** with the `pdo_sqlite` and `sqlite3` extensions. Laravel Herd on Windows and macOS includes both.
+- **PHP 8.3 or newer** with the `pdo_mysql` extension
+- **Docker Desktop** installed and running
 - **Composer 2**, the PHP package manager: https://getcomposer.org
 - **Node.js 20 or newer** (includes npm): https://nodejs.org
 - **Git**: https://git-scm.com
@@ -52,16 +59,47 @@ You don't need to install Laravel separately. The project includes it, and `comp
    ```
 
    On Windows PowerShell, use `copy .env.example .env` instead of `cp`.
+   This step writes a secret `APP_KEY` into `.env`. Laravel uses it to encrypt sessions and cookies. Without it, the app shows "No application encryption key has been specified."
 
-4. Create the SQLite database file:
+4. Start MySQL and configure Laravel’s connection.
 
-   ```bash
-   touch database/database.sqlite
+   In PowerShell, run the following command. Replace `CHOOSE_A_NEW_PASSWORD` with a password you choose.
+
+   ```powershell
+   docker run -d --name recipe-app-mysql `
+     -p 127.0.0.1:3307:3306 `
+     -e MYSQL_RANDOM_ROOT_PASSWORD=yes `
+     -e MYSQL_DATABASE=recipe_app `
+     -e MYSQL_USER=recipe_user `
+     -e 'MYSQL_PASSWORD=CHOOSE_A_NEW_PASSWORD' `
+     -v recipe-app-mysql-data:/var/lib/mysql `
+     mysql:8
    ```
 
-   On Windows PowerShell, use `New-Item database\database.sqlite` instead.
+   Update these settings in `.env`, using the same password:
 
-   The `key:generate` step in step 3 writes a secret `APP_KEY` into `.env`. Laravel uses it to encrypt sessions and cookies. Without it, the app shows "No application encryption key has been specified."
+   ```dotenv
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3307
+   DB_DATABASE=recipe_app
+   DB_USERNAME=recipe_user
+   DB_PASSWORD="your_chosen_password"
+   ```
+
+   Clear Laravel’s cached configuration:
+
+   ```powershell
+   php artisan config:clear
+   ```
+
+   Wait for MySQL to finish initializing before running migrations.
+
+   For later sessions, start the existing container with:
+
+   ```powershell
+   docker start recipe-app-mysql
+   ```
 
 5. Run the migrations:
 
