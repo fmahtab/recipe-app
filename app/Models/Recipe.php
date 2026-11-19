@@ -13,7 +13,6 @@ class Recipe extends Model
         'prep_minutes',
         'servings',
         'steps',
-        'user_id',
     ];
 
     public function ingredients(): BelongsToMany

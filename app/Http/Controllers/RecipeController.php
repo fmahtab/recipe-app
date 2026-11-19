@@ -51,14 +51,15 @@ class RecipeController extends Controller
         $user_id = $request->user()->id;
 
         $recipe = DB::transaction(function () use ($data, $user_id) {
-            $newRecipe = Recipe::create([
+            $newRecipe = new Recipe([
                 'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'prep_minutes' => $data['prep_minutes'],
                 'servings' => $data['servings'],
                 'steps' => $data['steps'],
-                'user_id' => $user_id,
             ]);
+            $newRecipe->user_id = $user_id;
+            $newRecipe->save();
 
             $this->syncIngredients($newRecipe, $data['ingredients']);
             return $newRecipe;
