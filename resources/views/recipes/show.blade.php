@@ -9,12 +9,17 @@
         <h1 style="margin-top:0;">{{ $recipe->title }}</h1>
 
         <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-            <a class="btn" href="{{ route('recipes.edit', $recipe) }}">Edit</a>
-            <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn-danger">Delete</button>
-            </form>
+            @can('update', $recipe)
+                <a class="btn" href="{{ route('recipes.edit', $recipe) }}">Edit</a>
+            @endcan
+            
+            @can('delete', $recipe)
+                <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+            @endcan
         </div>
 
         @if ($recipe->description)
